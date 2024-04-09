@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="mapstyle.css">
+    <title>Minski zapisnici</title>
+</head>
+<body>
+<header>
+    <div class="header-title"><a id="homeButton" href="../index.html"><img src="../home.png" alt="Home"></a><h1>Karta RH</h1>
+        
+    </div>
+    <!--<input type="text" id="filterCity"  placeholder = "Traži grad...">-->
+    <button id="osmButton"></button>
+    <input type="text" id="filterRecord"  placeholder = "Traži zapisnik...">
+    <label for="filterRecord">Ključ za pretraživanje:</label>
+    <select id="filterKey">
+      <option value="ID">ID</option>
+      <option value="Naselje">Naselje</option>
+      <option value="GKN">GKN</option>
+      <option value="GKE">GKE</option>
+    </select>
+    <div class="toggle"><button id="toggleCitiesButton">Toggle Cities</button></div>
+    <div class="toggle"><button id="toggleRecordsButton">Toggle Records</button></div>	
+    
+    
+</header>
+    <button id="zoomInButton">+</button>
+    <button id="zoomOutButton">-</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script>
+    <script src="coordScript.js"></script>
+    <script type="module" src="croMap.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams && urlParams.toString() !== "") {
+        
+        const id = urlParams.get('id');
+        document.getElementById('filterRecord').value = id;
+        filterRecord();
+
+        
+        } else {
+            console.log("urlParams is empty");
+        }
+
+        document.getElementById('osmButton').addEventListener('click', function() {
+            window.location.href = "osm.html";
+        });
+    </script>
+</body>
+</html>

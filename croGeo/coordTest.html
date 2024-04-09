@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gauss-Krüger to Lat/Lon</title>
+</head>
+<body>
+    <h1>Gauss-Krüger to Lat/Lon Conversion</h1>
+    <p>Enter Gauss-Krüger coordinates:</p>
+    <label for="easting">Easting:</label>
+    <input type="text" id="easting" value="610645">
+    <label for="northing">Northing:</label>
+    <input type="text" id="northing" value="5028710">
+    <button id="convertBtn">Convert</button>
+    <div id="result"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script>
+    <script src="coordScript.js" type="module"></script>
+
+</body>
+</html>
