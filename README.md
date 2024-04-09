@@ -7,7 +7,7 @@ Ako se u kojem slučaju podaci ne prikazuju, pomoću inspekt elementa provjeriti
 Nakon što je napravljen otvoriti properties tab i u polje gdje piše target nakon puta prečaca koji izgleda kao: 
 ` "C:\Program Files\Google\Chrome\Application\chrome.exe"; `
 dodati sljedeće 
-# "--disable-web-security --disable-gpu --user-data-dir=%LOCALAPPDATA%\Google\chromeTemp". 
+` "--disable-web-security --disable-gpu --user-data-dir=%LOCALAPPDATA%\Google\chromeTemp" ` 
 
 Cijelo target polje onda izgleda nešto kao ovo(uključujući i navodne znakove): 
-# "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=%LOCALAPPDATA%\Google\chromeTemp
+` "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=%LOCALAPPDATA%\Google\chromeTemp`
