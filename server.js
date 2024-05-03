@@ -4,31 +4,200 @@ const path = require('path');
 const bodyParser=require('body-parser');
 const fs = require('fs');
 const fileUpload = require('express-fileupload');
+const mustacheExpress = require('mustache-express');
 
 const app = express();
 app.use(fileUpload());
 
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+/*app.use((req, res, next) => {
+  if (req.url.endsWith('.css')) {
+    res.header('Content-Type', 'text/css');
+  }
+  next();
+});*/
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.engine('html', mustacheExpress());
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
 const db = new sqlite3.Database('zapisnici.db');
 
 app.use('/skice', express.static(path.join(__dirname, 'Skice')));
 //Svi zapisnici
+/*db.all('SELECT * FROM Zapisnici', (err, rows) =>{
+    res.render('indexM', {rows: rows});
+});*/
 app.get('/', (req, res) =>{
+    //console.log("Request recieved")
 	db.all('SELECT * FROM Zapisnici', (err, rows) =>{
 		if (err){
 			console.error(err.message);
 			res.status(500).send('Internal Server Error');
 		} else{
-			res.json(rows);
+			res.render('index', {rows: rows});
 		}
 	});
 });
+app.get('/map_details/:ID', (req, res) => {
+    
+    const id = req.params.ID;
+    //console.log("ID: ", id);
+    if (!id){
+        return res.status(400).send('ID parameter is missing');
+    }
 
+    db.get('SELECT * FROM Zapisnici WHERE ID = ?', [id], (err, row) =>{
+        if (err){
+            console.error(err.message);
+            return res.status(500).send('Internal Server Error');
+
+        }
+        if(!row){
+            return res.status(404).send('ID not found in Database.');
+        }
+        res.json(row);
+    });
+});
+app.get('/records', (req, res) =>{
+    db.all('SELECT * FROM Zapisnici', (err, rows) =>{
+        if (err){
+            console.error(err.message);
+            res.status(500).send('Internal Server Error');
+        } else{
+            res.json(rows);
+        }
+    });
+});
+app.get('/osm', (req, res) =>{
+    db.all('SELECT ID, GKN, GKE, Naselje FROM Zapisnici', (err, rows) =>{
+        if (err){
+            console.error(err.message);
+            res.status(500).send('Internal Server Error');
+        } else{
+            //console.log(rows);
+            res.render('osm', {rows: rows});
+        }
+    });
+});
+
+app.get('/map', (req, res) =>{
+    db.all('SELECT ID, GKN, GKE, Naselje FROM Zapisnici', (err, rows) =>{
+        if (err){
+            console.error(err.message);
+            res.status(500).send('Internal Server Error');
+        } else{
+            //console.log(rows);
+            res.render('map', {rows: rows});
+        }
+    });
+});
+
+app.get('/create', (req, res) => {
+    db.all('SELECT DISTINCT GKZona, UNSektor, OznakaUN, Županija, Općina, Naselje, VojskaID FROM Zapisnici', (err, rows) => {
+        if (err){
+            res.status(500).send('Internal Server Error');
+        } else{
+            //console.log("yo");
+            const form = {
+                GKZona: new Set(),
+                UNSektor: new Set(),
+                OznakaUN: new Set(),
+                Županija: new Set(),
+                Općina: new Set(),
+                Naselje: new Set(),
+                VojskaID: new Set()
+            };
+
+            rows.forEach(row =>{
+                form.GKZona.add(row.GKZona);
+                form.UNSektor.add(row.UNSektor);
+                form.OznakaUN.add(row.OznakaUN);
+                form.Županija.add(row.Županija);
+                form.Općina.add(row.Općina);
+                form.Naselje.add(row.Naselje);
+                form.VojskaID.add(row.VojskaID);
+            });
+
+            form.GKZona = Array.from(form.GKZona);
+            form.UNSektor = Array.from(form.UNSektor);
+            form.OznakaUN = Array.from(form.OznakaUN);
+            form.Županija = Array.from(form.Županija);
+            form.Općina = Array.from(form.Općina);
+            form.Naselje = Array.from(form.Naselje);
+            form.VojskaID = Array.from(form.VojskaID);
+            //console.log(form.GKZona);
+            res.render('create', {form: form})
+        }
+    });
+});
+
+app.get('/edit/:ID', (req, res) => {
+    db.all('SELECT DISTINCT GKZona, UNSektor, OznakaUN, Županija, Općina, Naselje, VojskaID FROM Zapisnici', (err, rows) => {
+        if (err){
+            res.status(500).send('Internal Server Error');
+        } else{
+            //console.log("yo");
+            const form = {
+                GKZona: new Set(),
+                UNSektor: new Set(),
+                OznakaUN: new Set(),
+                Županija: new Set(),
+                Općina: new Set(),
+                Naselje: new Set(),
+                VojskaID: new Set()
+            };
+
+            rows.forEach(row =>{
+                form.GKZona.add(row.GKZona);
+                form.UNSektor.add(row.UNSektor);
+                form.OznakaUN.add(row.OznakaUN);
+                form.Županija.add(row.Županija);
+                form.Općina.add(row.Općina);
+                form.Naselje.add(row.Naselje);
+                form.VojskaID.add(row.VojskaID);
+            });
+
+            form.GKZona = Array.from(form.GKZona);
+            form.UNSektor = Array.from(form.UNSektor);
+            form.OznakaUN = Array.from(form.OznakaUN);
+            form.Županija = Array.from(form.Županija);
+            form.Općina = Array.from(form.Općina);
+            form.Naselje = Array.from(form.Naselje);
+            form.VojskaID = Array.from(form.VojskaID);
+            //console.log(form.GKZona);
+
+            const id = req.params.ID;
+
+            if (!id){
+                return res.status(400).send('ID parameter is missing');
+            }
+
+            db.get('SELECT * FROM Zapisnici WHERE ID = ?', [id], (err, row) =>{
+                if (err){
+                    console.error(err.message);
+                    return res.status(500).send('Internal server error');
+                }
+                if (!row){
+                    return res.status(404).send('Id not found in database');
+                }
+                else{
+
+                }
+                res.render('edit', {form: form, details: row})
+            });
+            
+        }
+    });
+});
 //Detalji o zapisniku
-app.get('/details', (req, res) => {
-	const id = req.query.id;
+app.get('/details/:ID', (req, res) => {
+    
+	const id = req.params.ID;
+    //console.log("ID: ", id);
 	if (!id){
 		return res.status(400).send('ID parameter is missing');
 	}
@@ -42,7 +211,7 @@ app.get('/details', (req, res) => {
 		if(!row){
 			return res.status(404).send('ID not found in Database.');
 		}
-		res.json(row);
+		res.render('details', {details: row});
 	});
 });
 
