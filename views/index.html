@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minski zapisnici</title>
+    <link rel="stylesheet" href="public/style.css">
+    
+
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <h1>BAZA PODATAKA MINSKIH ZAPISNIKA</h1>
+        </div>
+        <button id="mapButton"></button>
+        <button id="createButton"></button>
+    </header>
+    <input type="text" id="searchNaselje" onkeyup="filterList()" placeholder = "Traži po naselju...">
+    <label for="minDate">Datum od:</label>
+    <input type="date" id="minDate" min="1991-01-01" value="1991-01-01">
+    <label for="maxDate">Datum do:</label>
+    <input type="date" id="maxDate">
+
+    <table id="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Županija</th>
+                <th>Općina</th>
+                <th>Naselje</th>
+                <th>Datum</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            {{#rows}}
+            <tr>
+                <td><a href="details/{{ID}}" target="_blank">{{ID}}</a></td>
+                <td>{{Županija}}</td>
+                <td>{{Općina}}</td>
+                <td>{{Naselje}}</td>
+                <td>{{Datum}}</td>
+                <td>
+                    <button class="delete-button" onclick="deleteRecord('{{ID}}')"><img src="public/delete.png" alt="Delete"></button>
+                <button class="delete-button"><a href="edit/{{ID}}"><img src="public/edit.png" alt="Edit"></button>
+                </a>
+                </td>
+
+            </tr>
+            {{/rows}}
+            {{^rows}}
+            <tr>
+                <td colspan="6">No records found</td>
+            </tr>
+            {{/rows}}
+        </tbody>
+            
+    </table>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js" ></script>
+    <script src="scripts/index.js"></script>
+    
+    
+</body>
+</html>
