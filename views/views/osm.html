@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+	<link rel="stylesheet" type="text/css" href="../public/osmStyle.css"/>
+	<link rel="stylesheet" href="../public/style.css">
+	<title>Map</title>
+</head>
+<body>
+<header>
+	<div class="header-title"><a id="homeButton" href="/"><img src="../public/home.png" alt="Home"></a><h1>Karta RH</h1>
+	</div>
+	<button id="svgButton"></button>
+	<input type="text" id="filterRecord"  placeholder = "Traži zapisnik...">
+	<label for="filterRecord">Ključ za pretraživanje:</label>
+    <select id="filterKey">
+      <option value="ID">ID</option>
+      <option value="Naselje">Naselje</option>
+      <option value="GKN">GKN</option>
+      <option value="GKE">GKE</option>
+    </select>
+</header>
+	<div id="map"></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script>
+    <script src="../scripts/coordScript.js"></script>
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js" ></script>
+	<script src="../scripts/osm.js"></script>
+	<script>
+		
+		const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams && urlParams.toString() !== "") {
+        
+        const id = urlParams.get('id');
+        document.getElementById('filterRecord').value = id;
+        filterRecord();
+
+        
+        } else {
+            console.log("urlParams is empty");
+        }
+
+
+    document.getElementById('svgButton').addEventListener('click', function() {
+            window.location.href = "../map";
+        });
+	</script>
+	
+</body>
+</html>
