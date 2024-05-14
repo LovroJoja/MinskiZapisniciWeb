@@ -71,15 +71,49 @@ let filteredRows = [];
                 }
                     //console.log(textValueNaselje, textValueDatum,typeof textValueDatum, datum, textValueNaselje.toUpperCase().indexOf(filter) > -1, (!minDate || datum >= new Date(minDate)), (!maxDate || datum <= new Date(maxDate)));
                     if ((textValueNaselje.toUpperCase().indexOf(filter) > -1) && (!minDate || datum >= new Date(minDate)) && (!maxDate || datum <= new Date(maxDate))){
-                        rows[i].style.display = ''
-                    } else{
-                        rows[i].style.display = 'none'
-                    }
+                        filteredRows.push(rows[i]);//rows[i].style.display = ''
+                    //} else{
+                       // rows[i].style.display = 'none'
+                    //}
                 }
             }
         }
-       
+        currentPage = 1;
+        updatePagination();
+        displayCurrentPage();
+}
+function updatePagination(){
+    const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    document.getElementById('totalPages').textContent = totalPages;
+}
 
+function displayCurrentPage(){
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = '';
+
+    for (let i = startIndex; i < endIndex && i < filteredRows.length; i++){
+        tableBody.appendChild(filteredRows[i]);
+    }
+    document.getElementById('currentPage').textContent = currentPage;
+}
+
+document.getElementById('prevPage').addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        displayCurrentPage();
+    }
+});
+
+document.getElementById('nextPage').addEventListener('click', () => {
+    const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayCurrentPage();
+    }
+});
 
 
 

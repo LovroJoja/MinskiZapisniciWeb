@@ -31,17 +31,20 @@ app.use('/skice', express.static(path.join(__dirname, 'Skice')));
 /*db.all('SELECT * FROM Zapisnici', (err, rows) =>{
     res.render('indexM', {rows: rows});
 });*/
+
 app.get('/', (req, res) =>{
     //console.log("Request recieved")
-	db.all('SELECT * FROM Zapisnici', (err, rows) =>{
-		if (err){
-			console.error(err.message);
-			res.status(500).send('Internal Server Error');
-		} else{
-			res.render('index', {rows: rows});
-		}
-	});
+    db.all('SELECT * FROM Zapisnici', (err, rows) =>{
+        if (err){
+            console.error(err.message);
+            res.status(500).send('Internal Server Error');
+        } else{
+            
+            res.render('index', {rows: rows});
+        }
+    });
 });
+
 app.get('/map_details/:ID', (req, res) => {
     
     const id = req.params.ID;
@@ -135,6 +138,25 @@ app.get('/create', (req, res) => {
     });
 });
 
+app.get('/field/:ID', (req, res) =>{
+    const rid = req.params.ID;
+    console.log(rid);
+    if (!rid){
+        return res.status(400).send('ID parameter is missing');
+    }
+
+    db.all('SELECT * FROM Polja WHERE RecordID = ?', [rid], (err, rows) => {
+    //db.all('SELECT * FROM Polja', (err, rows) => {
+       if (err){
+            console.error(err.message);
+            return res.status(500).send('Internal Server Error');
+
+        } else {
+            console.log(rows);
+            res.render('field', {fields: rows})
+        } 
+    });
+});
 app.get('/edit/:ID', (req, res) => {
     db.all('SELECT DISTINCT GKZona, UNSektor, OznakaUN, Županija, Općina, Naselje, VojskaID FROM Zapisnici', (err, rows) => {
         if (err){
@@ -270,7 +292,21 @@ app.post('/create', (req, res) => {
     });
 });
 
-
+app.post('/field', (req, res) => {
+    
+    const {RecordID, Vrhovi, Akcija} = req.body;
+    db.run(`INSERT INTO POLJA (RecordID, Vrhovi, Akcija) VALUES (?, ?, ?)`, [RecordID, Vrhovi, Akcija],
+        function(err){
+            if(err){
+                console.error(err);
+                return res.status(500).send('Internal Server Error.');
+            }
+            const insertedID = this.lastID;
+            console.log('New field inserted successfully.')
+            return res.status(200).json({message:"Polje uspješno uneseno.", insertedID: insertedID})
+        });
+    
+});
 //Makni zapis iz baze podataka
 app.delete('/delete/:id', (req, res) => {
 	const id = req.params.id;
@@ -291,6 +327,18 @@ app.delete('/delete/:id', (req, res) => {
 		console.log(`Zapisnik ${id} uklonjen iz baze podataka.`);
 		res.status(200).send('Record deleted successfully.');
 	});
+});
+
+app.delete('/field', (req, res) => {
+    const {ID} = req.body;
+    db.run('DELETE FROM Polja WHERE ID = ?', [ID], function (err){
+        if(err){
+            console.error(err.message);
+            return res.status(500).send('Internal Server Error');
+        }
+        console.log('Polje izbrisano.');
+        res.status(200).json({message: 'Polje uspješno izbrisano.'});
+    });
 });
 
 app.post('/update', (req, res) => {
@@ -351,6 +399,27 @@ app.post('/update', (req, res) => {
 
 
 const port = 3000
+
+/*db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
+    if (err) {
+        console.error("Error retrieving tables from the database:", err.message);
+    } else {
+        console.log("Tables in the database:");
+        tables.forEach(table => {
+            console.log(table.name);
+
+            // Query and log contents of each table
+            db.all(`SELECT * FROM ${table.name}`, (err, rows) => {
+                if (err) {
+                    console.error(`Error retrieving data from table ${table.name}:`, err.message);
+                } else {
+                    console.log(`Contents of table ${table.name}:`);
+                    console.log(rows);
+                }
+            });
+        });
+    }
+});*/
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);
 });

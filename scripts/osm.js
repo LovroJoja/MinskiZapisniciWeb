@@ -53,21 +53,6 @@ function resetMarkerSize(e) {
 }
 
 
-// Polygon test
-const polygonCoords = [
-    [45.1, 16.1],
-    [45.15, 16.15],
-    [45.15, 16.2],
-    [45.1, 16.1] 
-];
-
-
-const polygon = L.polygon(polygonCoords, {
-    color: 'red',
-    fillColor: 'red',
-    fillOpacity: 0.5 // Adjust opacity if needed
-}).addTo(map);
-console.log(polygon)
 
 // Add event listeners to each marker
 //marker.on('mouseover', increaseMarkerSize);
@@ -150,9 +135,17 @@ function handleClick(e) {
     closeButton.addEventListener('click', function() {
         detailsDiv.remove();
     });
+
+    const openFieldButton = document.createElement('button');
+        openFieldButton.innerHTML = 'Detalji područja';
+        openFieldButton.classList.add('open-field-button');
+        openFieldButton.addEventListener('click', function() {
+            window.open(`/field/${id}`, '_blank');
+        });
     
     // Append the close button to the details div
     detailsDiv.appendChild(closeButton);
+    detailsDiv.appendChild(openFieldButton);
     
     // Add the details div to the left side of the map
     document.body.appendChild(detailsDiv);
@@ -182,3 +175,9 @@ document.getElementById("filterRecord").addEventListener("keyup", filterRecord);
 document.getElementById("filterKey").addEventListener("change", filterRecord);
 
 
+
+function logClick(e){
+  console.log("Clicked coordinates:", e.latlng.lat, e.latlng.lng);
+}
+
+map.on('click', logClick);

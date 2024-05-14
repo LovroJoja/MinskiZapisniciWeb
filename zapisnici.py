@@ -80,4 +80,70 @@ print(c.fetchall())
 #record = c.fetchone()
 
 
+
+
+c.execute("""CREATE TABLE Županije (
+	ID integer PRIMARY KEY,
+	Naziv text,
+	Kratica text	
+
+	)""")
+
+c.execute("""CREATE TABLE Općine (
+	ID integer PRIMARY KEY,
+	Naziv text,
+	ŽupanijaKey integer	
+
+	)""")
+
+c.execute("""CREATE TABLE Naselje (
+	ID integer PRIMARY KEY,
+	Naziv text,
+	OpćinaKey integer
+	ŽupanijaKey integer	
+
+	)""")
+
+#vrhovi zapisani u obliku xCoord/yCoord-xCoord/yCoord-...
+#prvo split po "-" za vrhove onda split po "/" za koordinate vrhova 
+c.execute("""CREATE TABLE Polja (
+	ID integer PRIMARY KEY AUTOINCREMENT,
+	RecordID integer,
+	Vrhovi text,
+	Akcija text	
+
+	)""")
+c.execute("INSERT INTO Polja VALUES (:ID, :RecordID, :Vrhovi, :Akcija)", {"ID": 1, "RecordID": 30706, "Vrhovi": "45.1|16.1-45.15|16.15-45.15|16.2-45.1|16.1", "Akcija": "Cleared"})
+#45.1|16.1-45.15|16.15-45.15|16.2-45.1|16.1
+
+
+
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 1, "Naziv": "Međimurska", "Kratica": "MM"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 2, "Naziv": "Virovitičko-Podravksa", "Kratica": "VP"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 3, "Naziv": "Koprivničko-Križevačka", "Kratica": "KK"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 4, "Naziv": "Osječko-Baranjska", "Kratica": "OB"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 5, "Naziv": "Istarska", "Kratica": "IS"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 6, "Naziv": "Dubrovačko-Neretvanska", "Kratica": "DN"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 7, "Naziv": "Sisačko-Moslavačka", "Kratica": "SM"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 8, "Naziv": "Brodsko-Posavska", "Kratica": "BP"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 9, "Naziv": "Karlovačka", "Kratica": "KR"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 10, "Naziv": "Zadarska", "Kratica": "ZD"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 11, "Naziv": "Vukovarsko-Srijemska", "Kratica": "VS"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 12, "Naziv": "Splitsko-Dalmatinska", "Kratica": "SD"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 13, "Naziv": "Varaždinska", "Kratica": "VŽ"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 14, "Naziv": "Krapinsko-Zagorska", "Kratica": "KZ"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 15, "Naziv": "Zagrebačka", "Kratica": "ZG"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 16, "Naziv": "Primorsko-Goranska", "Kratica": "PG"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 17, "Naziv": "Šibensko-Kninska", "Kratica": "ŠK"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 18, "Naziv": "Ličko-Senjska", "Kratica": "LS"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 19, "Naziv": "Međimurska", "Kratica": "BB"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 20, "Naziv": "Grad Zagreb", "Kratica": "GZ"})
+c.execute("INSERT INTO Županije VALUES (:ID, :Naziv, :Kratica)", {"ID": 21, "Naziv": "Požeško-Slavonska", "Kratica": "PS"})
+conn.commit()
+c.execute("SELECT * FROM Županije")
+print(c.fetchall())
+
+
+
+
 conn.close()

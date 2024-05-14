@@ -42,6 +42,6 @@ imageDiv.appendChild(img);
 			}, 0);
 		});
 		document.getElementById('mapDButton').addEventListener('click', function() {
-            window.location.href = `../osm?id=${id}`;
+            window.location.href = `../field/${id}`;
         });
 	
