@@ -294,8 +294,8 @@ app.post('/create', (req, res) => {
 
 app.post('/field', (req, res) => {
     
-    const {RecordID, Vrhovi, Akcija} = req.body;
-    db.run(`INSERT INTO POLJA (RecordID, Vrhovi, Akcija) VALUES (?, ?, ?)`, [RecordID, Vrhovi, Akcija],
+    const {RecordID, Vrhovi, Operacija, Opis, Color} = req.body;
+    db.run(`INSERT INTO POLJA (RecordID, Vrhovi, Operacija, Opis, Color) VALUES (?, ?, ?, ?, ?)`, [RecordID, Vrhovi, Operacija, Opis, Color],
         function(err){
             if(err){
                 console.error(err);
@@ -340,7 +340,22 @@ app.delete('/field', (req, res) => {
         res.status(200).json({message: 'Polje uspješno izbrisano.'});
     });
 });
+app.post('/fieldEdit', (req, res) => {
 
+    const {ID, Operacija, Opis, Color} = req.body;
+
+    db.run(`UPDATE Polja 
+        SET Operacija=?, Opis=?, Color=?
+        WHERE ID=?`, [Operacija, Opis, Color, ID], function(err) {
+            if (err){
+                console.error(err.message);
+                return res.status(500).send('Internal Server Error');
+            } else {
+                console.log('Update on field successful.');
+                return res.status(200).json({message:"Polje uspješno uređeno."});
+            }
+        });
+});
 app.post('/update', (req, res) => {
 	//console.log("Legooo")
     const formData = req.body;
@@ -400,26 +415,14 @@ app.post('/update', (req, res) => {
 
 const port = 3000
 
-/*db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
-    if (err) {
-        console.error("Error retrieving tables from the database:", err.message);
-    } else {
-        console.log("Tables in the database:");
-        tables.forEach(table => {
-            console.log(table.name);
 
-            // Query and log contents of each table
-            db.all(`SELECT * FROM ${table.name}`, (err, rows) => {
-                if (err) {
-                    console.error(`Error retrieving data from table ${table.name}:`, err.message);
-                } else {
-                    console.log(`Contents of table ${table.name}:`);
-                    console.log(rows);
-                }
-            });
-        });
-    }
-});*/
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);
 });
+
+
+
+
+function editPolygon(ID){
+    
+}

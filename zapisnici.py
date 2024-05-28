@@ -1,7 +1,7 @@
 import sqlite3
 import csv
 import os
-from IPython.display import display, Image
+#from IPython.display import display, Image
 
 path = 'C:\\Users\\lovro\\OneDrive\\Radna površina\\DIPL\\Skice'
 def read_csv_as_list_of_dicts(file_path):
@@ -96,7 +96,7 @@ c.execute("""CREATE TABLE Općine (
 
 	)""")
 
-c.execute("""CREATE TABLE Naselje (
+c.execute("""CREATE TABLE Naselja (
 	ID integer PRIMARY KEY,
 	Naziv text,
 	OpćinaKey integer
@@ -110,10 +110,12 @@ c.execute("""CREATE TABLE Polja (
 	ID integer PRIMARY KEY AUTOINCREMENT,
 	RecordID integer,
 	Vrhovi text,
-	Akcija text	
+	Operacija text,
+	Opis text,
+	Color text	
 
 	)""")
-c.execute("INSERT INTO Polja VALUES (:ID, :RecordID, :Vrhovi, :Akcija)", {"ID": 1, "RecordID": 30706, "Vrhovi": "45.1|16.1-45.15|16.15-45.15|16.2-45.1|16.1", "Akcija": "Cleared"})
+#c.execute("INSERT INTO Polja VALUES (:ID, :RecordID, :Vrhovi, :Akcija)", {"ID": 1, "RecordID": 30706, "Vrhovi": "45.1|16.1-45.15|16.15-45.15|16.2-45.1|16.1", "Akcija": "Cleared"})
 #45.1|16.1-45.15|16.15-45.15|16.2-45.1|16.1
 
 
