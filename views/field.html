@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 	<link rel="stylesheet" type="text/css" href="../public/osmStyle.css"/>
+	<link rel="stylesheet" type="text/css" href="../public/fieldStyle.css"/>
 	<link rel="stylesheet" href="../public/style.css">
 	<title>Map</title>
 </head>
@@ -11,8 +12,8 @@
 <header>
 	<div class="header-title"><a id="homeButton" href="/"><img src="../public/home.png" alt="Home"></a><h1>Topografski podaci zapisnika</h1>
 	</div>
-	<button id="writePolygonBtn">Upiši Polje</button>
-	<button id="createPolygonBtn">Nacrtaj Polje</button>
+	<button id="writePolygonBtn"></button>
+	<button id="createPolygonBtn"></button>
 </header>
 	<div id="map"></div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.7.5/proj4.js"></script>
@@ -28,7 +29,9 @@
         fields.push({ ID: {{ID}},
         RecordID: {{RecordID}},
         Vrhovi: '{{Vrhovi}}',
-    	Akcija: '{{Akcija}}'
+    	Operacija: '{{Operacija}}',
+        Opis: '{{Opis}}',
+        Color: '{{Color}}'
     });
         //console.log(fields)
     </script>
@@ -37,5 +40,81 @@
     <script>
     	drawFields();
     </script>
+
+    <script>
+    // Function to extract ID from URL
+    function getIDFromURL() {
+        // Get the current URL
+        var url = window.location.href;
+        // Split the URL by '/' to get individual parts
+        var parts = url.split('/');
+        // The ID should be the last part of the URL
+        var id = parts[parts.length - 1];
+        return id;
+    }
+
+    // Function to update header title with ID
+    function updateHeaderTitle() {
+        // Get the ID from the URL
+        var id = getIDFromURL();
+        // Get the header title element
+        var headerTitle = document.querySelector('.header-title h1');
+        // Update the title with the ID
+        headerTitle.textContent += " - HCR//" + id;
+    }
+
+    // Call the function to update header title when the page loads
+    updateHeaderTitle();
+
+    fetch(`/map_details/${getIDFromURL()}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetch log:", data.ID)
+      
+
+    // Create a new div element
+    const detailsDiv = document.createElement('div');
+    detailsDiv.classList.add('fdetails-panel');
+    
+    // Add ID text to the div
+    detailsDiv.innerHTML = `<div class="details-content">ID: ${getIDFromURL()}<br>GKZona: ${data.GKZona}<br>GKN: ${data.GKN}<br>GKE: ${data.GKE}
+                            <br>UNSektor: ${data.UNSektor}<br>OznakaUN: ${data.OznakaUN}<br>
+                            Oznaka: ${data.Oznaka}<br>Županija: ${data.Županija}<br>Općina: ${data.Općina}
+                            <br>Naselje: ${data.Naselje}<br>VojskaID: ${data.VojskaID}
+                            <br>Datum: ${data.Datum}<br>POM: ${data.POM}<br>PPM: ${data.PPM}
+                            <br>Ostala: ${data.Ostala}<br>Provjere: ${data.provjere}<br>Tip polja: ${data.TipPolja}</div>`;
+   
+    const collapseButton = document.createElement('button');
+    collapseButton.innerHTML = '-';
+    collapseButton.classList.add('collapse-button');
+
+    const expandButton = document.createElement('button');
+    expandButton.innerHTML = '+';
+    expandButton.classList.add('expand-button');
+    expandButton.style.display = 'none';
+
+    collapseButton.addEventListener('click', function() {
+        detailsDiv.querySelector('.details-content').style.display = 'none';
+        collapseButton.style.display = 'none';
+        expandButton.style.display = 'inline';
+    });
+    
+    // Event listener to expand the details panel
+    expandButton.addEventListener('click', function() {
+        detailsDiv.querySelector('.details-content').style.display = 'block';
+        collapseButton.style.display = 'inline';
+        expandButton.style.display = 'none';
+    });
+
+    detailsDiv.appendChild(collapseButton);
+    detailsDiv.appendChild(expandButton);
+    
+    
+    // Add the details div to the left side of the map
+    document.body.appendChild(detailsDiv);
+    }).catch(error => {console.error('Error fetching data:', error)});
+
+</script>
+
 </body>
 </html>

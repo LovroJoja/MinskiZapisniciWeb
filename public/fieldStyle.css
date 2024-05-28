@@ -1,0 +1,197 @@
+button#writePolygonBtn{
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 20px;
+}
+
+button#writePolygonBtn:hover{
+    
+    transform: scale(1.05);
+}
+
+button#writePolygonBtn::before{
+    content: "Upiši Polje";
+}
+
+button#writePolygonBtn.active {
+    background-color: red; /* Change to your desired active color */
+}
+
+button#writePolygonBtn.active::before {
+    content: "Završi Upisivanje Polja";
+}
+
+
+button#createPolygonBtn{
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 20px;
+}
+
+button#createPolygonBtn:hover{
+    
+    transform: scale(1.05);
+}
+
+button#createPolygonBtn::before{
+    content: "Nacrtaj Polje";
+}
+
+button#createPolygonBtn.active {
+    background-color: red; /* Change to your desired active color */
+}
+
+button#createPolygonBtn.active::before {
+    content: "Završi Crtanje Polja";
+}
+
+.custom-tooltip {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 14px;
+    pointer-events: none; /* Prevent the tooltip from interfering with mouse events */
+}
+
+.field-details-panel {
+    position: fixed;
+    top: 150px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    padding-right: 35px;
+    padding-bottom: 50px;
+    border: 1px solid #ccc;    
+    z-index: 1000;
+    max-width: 250px;
+    
+}
+
+.field-details-panel p {
+    margin: 0; /* Resets margin for paragraphs */
+    padding: 0; /* Resets padding for paragraphs */
+    overflow-wrap: break-word; /* Ensures long words break and wrap to the next line */
+    word-wrap: break-word; /* IE compatibility */
+    word-break: break-word; /* Breaks words at arbitrary points if needed */
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: none;
+    font-size: 11px;
+    cursor: pointer;
+    color: #333;
+}
+
+.polygon-form-container,
+.edit-form-container {
+    background-color: white;
+    border: 2px solid black;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    margin: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.polygon-form label,
+.edit-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.polygon-form input,
+.edit-form input {
+    width: calc(100% - 12px);
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-button {
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.form-button:hover {
+    background-color: darkgreen;
+}
+
+.vertices-container {
+    position:  relative;
+    margin-bottom: 10px;
+}
+
+.vertex-input {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.fdetails-panel {
+    position: fixed;
+    top: 150px; /* Adjust as needed */
+    left: 20px; /* Adjust as needed */
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    padding-right: 35px;
+    padding-bottom: 20px;
+    border: 1px solid #ccc;
+    z-index: 1000; /* Ensure it appears above the map */
+}
+
+.add-vertex {
+    background-color: #00FF00;
+    color: white;
+    font-size: 15px;
+    position: relative;
+    top: 0;
+    right: 0;
+}
+
+/* Style for the + and - buttons */
+.add-vertex button {
+    margin: 5px;
+}
+
+.remove-vertex {
+    position: relative;
+    color: white;
+    font-size: 15px;
+    background-color: #FF0000;
+    top: 0;
+    right: 0;
+}
+
+/* Style for the + and - buttons */
+.remove-vertex button {
+    margin: 5px;
+}
