@@ -1,0 +1,23 @@
+version: "3"
+services: 
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: lovro2205
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/minskiZapisnici.sql:/docker-entrypoint-initdb.d/minskiZapisnici.sql
+  app:
+    build: ./app
+    ports:
+      - "13000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: lovro2205
+      DB_NAME: postgres

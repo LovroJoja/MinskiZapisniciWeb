@@ -1,0 +1,86 @@
+#map{
+	width: 100%;
+	height: 100vh;
+}
+
+#zoomInButton,
+#zoomOutButton {
+    display: block;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+#zoomInButton:hover,
+#zoomOutButton:hover {
+    background-color: #f0f0f0;
+}
+
+
+.details-panel {
+    position: fixed;
+    top: 150px; /* Adjust as needed */
+    left: 20px; /* Adjust as needed */
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    padding-right: 35px;
+    padding-bottom: 50px;
+    border: 1px solid #ccc;
+    z-index: 1000; /* Ensure it appears above the map */
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: none;
+    font-size: 11px;
+    cursor: pointer;
+    color: #333;
+}
+
+.open-field-button {
+    position: absolute;
+    bottom: 10px; /* Adjust as needed for spacing */
+    left: 20px; /* Adjust as needed for spacing */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #333;
+    font-size: 14px; /* Adjust font size as needed */
+    z-index: 1000; /* Ensure it appears above the map */
+}
+
+.open-field-button:hover {
+    background-color: #f0f0f0;
+}
+
+.collapse-button,
+.expand-button {
+    position: absolute;
+    top: 5px;
+    right: 12px;
+    background-color: gray;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    color: #333;
+}
+
+.collapse-button:hover,
+.expand-button:hover {
+    background-color: lightgray;
+}
+
+.details-content {
+    display: block;
+}
