@@ -53,13 +53,6 @@ function resetMarkerSize(e) {
 }
 
 
-
-// Add event listeners to each marker
-//marker.on('mouseover', increaseMarkerSize);
-//marker.on('mouseout', resetMarkerSize);
-//marker2.on('mouseover', increaseMarkerSize);
-//marker2.on('mouseout', resetMarkerSize);
-
 // Fetch data from the server
 fetch('/records')
   .then(response => response.json())

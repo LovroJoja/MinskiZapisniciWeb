@@ -20,6 +20,15 @@
     <script src="../scripts/coordScript.js"></script>
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js" ></script>
+
+
+    {{#colorCode}}
+    <script>
+        const defaultColor = '{{colorCode}}';
+        //console.log(defaultColor);
+    </script>
+    {{/colorCode}}
+    
 	<script src="../scripts/field.js"></script>
 	{{#fields}}
 	<script>
@@ -37,6 +46,7 @@
     </script>
     {{/fields}}
 
+    
     <script>
     	drawFields();
     </script>

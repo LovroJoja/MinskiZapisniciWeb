@@ -1,4 +1,5 @@
 fields = [];
+//let defaultColor = "#ffffff"
 const rid = window.location.href.split("/")[4];
 //console.log(rid);
 let colors = {"Cleared":"green", "Investigating":"yellow", "Demining":"red"};
@@ -49,19 +50,19 @@ let polygonCoords = [];
 let createPolygonMode = false;
 let markerLayer = L.layerGroup();
 
-function toggleCreate(){
+function toggleCreate() {
   createPolygonMode = !createPolygonMode;
   const createPolygonBtn = document.getElementById("createPolygonBtn");
-  if (createPolygonMode){
+  
+  if (createPolygonMode) {
     polygonCoords = [];
     createPolygonBtn.classList.add("active");
-    console.log("Creating polygon...")
-  }
-
-  else{
+    console.log("Creating polygon...");
+  } else {
     markerLayer.clearLayers();
     createPolygonBtn.classList.remove("active");
-    if (polygonCoords.length >= 3){
+    
+    if (polygonCoords.length >= 3) {
       polygonCoords.push(polygonCoords[0]);
       
       const formContent = `
@@ -72,6 +73,8 @@ function toggleCreate(){
         <input type="text" id="descriptionInput" name="description"><br>
         <label for="colorInput">Color:</label>
         <input type="color" id="colorInput" name="color" value="#ff0000"><br>
+        <label for="useColorCheckbox">Use Custom Color:</label>
+        <input type="checkbox" id="useColorCheckbox" name="useColorCheckbox" checked><br>
         <button id="submitDetailsBtn">Submit</button>
       `;
       
@@ -80,69 +83,72 @@ function toggleCreate(){
         .setLatLng(map.getBounds().getCenter())
         .setContent(formContent)
         .openOn(map);
-      document.getElementById("submitDetailsBtn").addEventListener("click", function(){
+      
+      document.getElementById("submitDetailsBtn").addEventListener("click", function() {
         const action = document.getElementById("actionInput").value;
         const description = document.getElementById("descriptionInput").value;
-        const color = document.getElementById("colorInput").value;
+        const useColor = document.getElementById("useColorCheckbox").checked;
+        const color = useColor ? document.getElementById("colorInput").value : null;
 
-                if(!action || !description || !color){
-                  alert("All fields are required!");
-                  return;
-                }
+        if (!action || !description) {
+          alert("Action and description fields are required!");
+          return;
+        }
 
-                map.closePopup(polygonPopup);
-                console.log("Submitted details:", { action, description, color });
-                // Add the polygon layer with the selected action
-                const polygon = L.polygon(polygonCoords, {
-                    color: "black",//colors[selectedAction],
-                    fillColor: color,
-                    fillOpacity: 0.5,
-                    ID: null,
-                    Opis: description,
-                    Operacija: action
-                    //action: selectedAction // Add custom property for action
-                }).addTo(map);
-                //console.log(polygon);
-                let vrhovi = ""
-                polygonCoords.slice(0, -1).forEach((coord) => {
-                  vrhovi += String(coord[0]) + "|" + String(coord[1]) + "-";
-                });
-                vrhovi += String(polygonCoords[0][0]) + "|" + String(polygonCoords[0][1]);
-                
+        map.closePopup(polygonPopup);
+        console.log("Submitted details:", { action, description, color });
 
-                //send POST HERE
-                fetch('/field', {
-                  method:'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({RecordID: rid, Vrhovi:vrhovi, Operacija:action, Opis: description, Color:color}),
-                }).then(response => {
-                  if(!response.ok) {
-                    throw new Error('Network response was not ok');
-                  }
-                  return response.json();
-                }).then(data => {
-                  polygon.options.ID = data.insertedID;
-                  polygon.on('click', function(){
-                      if(!createPolygonMode){
-                        polygonDetails(data.insertedID, action, description, color);
-                    }
-                  });
-                  console.log('Upload polja uspješan', data);
-                }).catch(error => {
-                  console.error('Error pri uploadu polja', error);
-                });
+        const polygonOptions = {
+          color: "black",
+          fillColor: color || defaultColor, // If color is null, set fillColor to 'transparent'
+          fillOpacity: 0.5,     // If color is null, set fillOpacity to 0
+          ID: null,
+          Opis: description,
+          Operacija: action
+        };
 
-
-                console.log(polygon);
-            });
+        const polygon = L.polygon(polygonCoords, polygonOptions).addTo(map);
         
+        let vrhovi = "";
+        polygonCoords.slice(0, -1).forEach((coord) => {
+          vrhovi += String(coord[0]) + "|" + String(coord[1]) + "-";
+        });
+        vrhovi += String(polygonCoords[0][0]) + "|" + String(polygonCoords[0][1]);
+        
+        fetch('/field', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ RecordID: rid, Vrhovi: vrhovi, Operacija: action, Opis: description, Color: color }),
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          polygon.options.ID = data.insertedID;
+          polygon.on('click', function() {
+            if (!createPolygonMode) {
+              polygonDetails(data.insertedID, action, description, color);
+            }
+          });
+          console.log('Field upload successful', data);
+        })
+        .catch(error => {
+          console.error('Error uploading field', error);
+        });
+        
+        console.log(polygon);
+      });
     } else {
-      alert("Potrebna su barem 3 vrha za kreiranje polja! Crtanje polja prekinuto.  ")
+      alert("At least 3 vertices are required to create a field! Drawing field interrupted.");
     }
   }
 }
+
 
 
 
@@ -166,10 +172,11 @@ function drawFields(){
       //console.log(pair);
       coords.push([pair[0], pair[1]]);
     });
-
+    let fieldColor = field.Color;
+    if (!fieldColor) fieldColor = defaultColor;
     const polygon = L.polygon(coords,{
       color:"black",
-      fillColor: field.Color,
+      fillColor: fieldColor,
       fillOpacity: 0.5,
       ID: field.ID,
       Opis: field.Opis,
@@ -228,6 +235,15 @@ function writePolygon() {
     colorInput.name = 'color';
     colorInput.value = '#ff0000';
 
+    const useColorLabel = document.createElement('label');
+    useColorLabel.setAttribute('for', 'useColorCheckbox');
+    useColorLabel.textContent = 'Use Color:';
+    const useColorCheckbox = document.createElement('input');
+    useColorCheckbox.type = 'checkbox';
+    useColorCheckbox.id = 'useColorCheckbox';
+    useColorCheckbox.name = 'useColorCheckbox';
+    useColorCheckbox.checked = true;
+
     const submitButton = document.createElement('button');
     submitButton.type = 'button';
     submitButton.textContent = 'Submit';
@@ -246,98 +262,102 @@ function writePolygon() {
     removeVertexButton.textContent = '-';
     removeVertexButton.classList.add('remove-vertex');
 
-  // Add initial vertex inputs (minimum 3)
-  for (let i = 0; i < 3; i++) {
-    addVertexInput(verticesContainer);
-  }
-
-  // Append elements to the form
-  form.appendChild(addVertexButton);
-  form.appendChild(removeVertexButton);
-  form.appendChild(verticesContainer);
-  
-  form.appendChild(actionLabel);
-  form.appendChild(actionInput);
-  form.appendChild(descriptionLabel);
-  form.appendChild(descriptionInput);
-  form.appendChild(colorLabel);
-  form.appendChild(colorInput);
-  form.appendChild(submitButton);
-  form.appendChild(cancelButton);
-  formContainer.appendChild(form);
-  document.body.appendChild(formContainer);
-
-  // Event listeners for form buttons
-  addVertexButton.addEventListener('click', function () {
-    addVertexInput(verticesContainer);
-  });
-
-  removeVertexButton.addEventListener('click', function () {
-    removeVertexInput(verticesContainer);
-  });
-
-  submitButton.addEventListener('click', function () {
-    const vertices = [];
-    verticesContainer.querySelectorAll('.vertex-input').forEach(input => {
-      const coords = input.value.split(',');
-      if (coords.length === 2) {
-        vertices.push([parseFloat(coords[0]), parseFloat(coords[1])]);
-      }
-    });
-
-    const action = actionInput.value;
-    const description = descriptionInput.value;
-    const color = colorInput.value;
-
-    if (vertices.length < 3 || !action || !description || !color) {
-      alert("All fields are required and at least 3 vertices are needed!");
-      return;
+    // Add initial vertex inputs (minimum 3)
+    for (let i = 0; i < 3; i++) {
+        addVertexInput(verticesContainer);
     }
 
-    vertices.push(vertices[0]); // Close the polygon
+    // Append elements to the form
+    form.appendChild(addVertexButton);
+    form.appendChild(removeVertexButton);
+    form.appendChild(verticesContainer);
 
-    // Draw the polygon on the map
-    const polygon = L.polygon(vertices, {
-      color: "black",
-      fillColor: color,
-      fillOpacity: 0.5,
-      ID: null,
-      Opis: description,
-      Operacija: action
-    }).addTo(map);
+    form.appendChild(actionLabel);
+    form.appendChild(actionInput);
+    form.appendChild(descriptionLabel);
+    form.appendChild(descriptionInput);
+    form.appendChild(colorLabel);
+    form.appendChild(colorInput);
+    form.appendChild(useColorLabel);
+    form.appendChild(useColorCheckbox);
+    form.appendChild(submitButton);
+    form.appendChild(cancelButton);
+    formContainer.appendChild(form);
+    document.body.appendChild(formContainer);
 
-    let vrhovi = vertices.slice(0, -1).map(coord => `${coord[0]}|${coord[1]}`).join('-');
-    vrhovi += `-${vertices[0][0]}|${vertices[0][1]}`;
-
-    // Send POST request
-    fetch('/field', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ RecordID: rid, Vrhovi: vrhovi, Operacija: action, Opis: description, Color: color }),
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }).then(data => {
-      polygon.options.ID = data.insertedID;
-      polygon.on('click', function () {
-        if (!createPolygonMode) {
-          polygonDetails(data.insertedID, action, description, color);
-        }
-      });
-      console.log('Field upload successful', data);
-    }).catch(error => {
-      console.error('Error uploading field', error);
+    // Event listeners for form buttons
+    addVertexButton.addEventListener('click', function () {
+        addVertexInput(verticesContainer);
     });
 
-    formContainer.remove();
-  });
+    removeVertexButton.addEventListener('click', function () {
+        removeVertexInput(verticesContainer);
+    });
 
-  cancelButton.addEventListener('click', function () {
-    formContainer.remove();
-  });
+    submitButton.addEventListener('click', function () {
+        const vertices = [];
+        verticesContainer.querySelectorAll('.vertex-input').forEach(input => {
+            const coords = input.value.split(',');
+            if (coords.length === 2) {
+                vertices.push([parseFloat(coords[0]), parseFloat(coords[1])]);
+            }
+        });
+
+        const action = actionInput.value;
+        const description = descriptionInput.value;
+        const useColor = useColorCheckbox.checked;
+        const color = useColor ? colorInput.value : null;
+
+        if (vertices.length < 3 || !action || !description) {
+            alert("All fields are required and at least 3 vertices are needed!");
+            return;
+        }
+
+        vertices.push(vertices[0]); // Close the polygon
+
+        // Draw the polygon on the map
+        const polygon = L.polygon(vertices, {
+            color: "black",
+            fillColor: color || defaultColor, // If color is null, set fillColor to 'transparent'
+            fillOpacity: 0.5,     // If color is null, set fillOpacity to 0
+            ID: null,
+            Opis: description,
+            Operacija: action
+        }).addTo(map);
+
+        let vrhovi = vertices.slice(0, -1).map(coord => `${coord[0]}|${coord[1]}`).join('-');
+        vrhovi += `-${vertices[0][0]}|${vertices[0][1]}`;
+
+        // Send POST request
+        fetch('/field', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ RecordID: rid, Vrhovi: vrhovi, Operacija: action, Opis: description, Color: color }),
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }).then(data => {
+            polygon.options.ID = data.insertedID;
+            polygon.on('click', function () {
+                if (!createPolygonMode) {
+                    polygonDetails(data.insertedID, action, description, color);
+                }
+            });
+            console.log('Field upload successful', data);
+        }).catch(error => {
+            console.error('Error uploading field', error);
+        });
+
+        formContainer.remove();
+    });
+
+    cancelButton.addEventListener('click', function () {
+        formContainer.remove();
+    });
 }
+
 
 function addVertexInput(container) {
   const input = document.createElement('input');
@@ -484,7 +504,7 @@ function editPolygon(ID, action, description, color) {
     colorInput.type = 'color';
     colorInput.id = 'editColorInput';
     colorInput.name = 'color';
-    colorInput.value = color;
+    colorInput.value = color || defaultColor;
 
     const submitButton = document.createElement('button');
     submitButton.type = 'button';

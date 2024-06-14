@@ -16,7 +16,7 @@
 				}
 				//console.log(formData);
 				$.ajax({
-					url: 'http://localhost:3000/update',
+					url: '/update',
 					type: 'POST',
 					data: formData,
 					processData: false,

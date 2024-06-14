@@ -3,12 +3,6 @@ const urlObject = new URL(currentURL);
 const pathComponents = urlObject.pathname.split("/");
 const id = pathComponents[pathComponents.length - 1];
 
-/*fetch('/image/${id}')
-	.then(response => response.json)
-	.then(data => {
-
-	}).catch(error => console.error('Error fetching Image:', error));*/
-
 const imageDiv = document.getElementById('image');
 const img = document.createElement('img');
 img.src = `../Skice/${id}.png`;
@@ -41,7 +35,7 @@ imageDiv.appendChild(img);
 				window.URL.revokeObjectURL(url);
 			}, 0);
 		});
-		document.getElementById('mapDButton').addEventListener('click', function() {
-            window.location.href = `../field/${id}`;
-        });
+document.getElementById('mapDButton').addEventListener('click', function() {
+    window.location.href = `../field/${id}`;
+});
 	

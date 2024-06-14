@@ -3,13 +3,10 @@ for(let i = 1; i <= 21; i++){
   regionTotal[i] = 0;
 }
 const regionKeys = {"MM": 1,"VP":2,"KK":3,"OB":4,"IS":5,"DN":6,"SM":7,"BP":8,"KR":9,"ZD":10,"VS":11,"SD":12,"VŽ":13,"KZ":14,"ZG":15,"PG":16,"ŠK":17,"LS":18,"BB":19,"GZ":20,"PS":21};
-//console.log(regionKeys);
 let citiesVisible = true;
 let recordsVisible = true;
 let records = [];
-//regionTotal[3] = 5;
-//regionTotal[9] = 15;
-//regionTotal[15] = 40;
+
 fetch('/records')
   .then(response => response.json())
   .then(data => {
@@ -127,15 +124,10 @@ d3.json("../public/croatia.json").then(function(croatiaData) {
       .attr("stroke-width", 2)
       //.attr("id", d => "region-" + d.features.id)
       .on("mouseover", function(event, d){
-
-        //console.log(d3.select(this).datum().properties.name);
         const podaci = d3.select(this).datum();
-        //console.log(podaci);
-        d3.select(this)
-          //.attr("transform", "scale(1.05)")
+        d3.select(this)          
           .attr("fill", "dodgerblue")
           .attr("stroke-width", 4);
-          //.attr("stroke", "darkgreen")
         tooltip.transition()
           .duration(200)
           .style("opacity", 0.9);

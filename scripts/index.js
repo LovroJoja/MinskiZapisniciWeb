@@ -3,7 +3,7 @@ const rowsPerPage=25;
 let filteredRows = [];
         function deleteRecord(id){
             if(confirm("Jeste li sigurni da želite obrisati zapisnik s ID-jem: " + id + "?")) {
-                fetch('http://localhost:3000/delete/' + id, {
+                fetch('/delete/' + id, {
                     method:'DELETE'
                 }).then(response => {
                     if (response.ok){
